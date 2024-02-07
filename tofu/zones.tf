@@ -4,30 +4,30 @@ module "idletea_net" {
 
   fqdn              = "idletea.net"
   tuta_verification = "303b0c7840ee2a2cc76d650940afec88"
-  records           = [
+  records = [
     {
       type  = "CNAME"
       name  = "www"
       value = "idletea.net"
-    }, {
+      }, {
       type  = "A"
       name  = "@"
       value = "138.197.165.65"
-    }, {
+      }, {
       type    = "A"
       name    = "cdn"
       value   = "138.197.165.65"
       proxied = true
-    }, {
+      }, {
       type    = "A"
       name    = "echo"
       value   = "138.197.165.65"
       proxied = true
-    }, {
+      }, {
       type  = "A"
       name  = "err"
       value = "138.197.165.65"
-    }, {
+      }, {
       type  = "A"
       name  = "rsvplease"
       value = "138.197.165.65"
@@ -39,8 +39,8 @@ module "idte_net" {
   source     = "./cloudflare_zone"
   account_id = local.cloudflare_account_id
 
-  fqdn       = "idte.net"
-  records    = [
+  fqdn = "idte.net"
+  records = [
     # machines
     {
       type  = "A"
