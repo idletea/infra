@@ -5,7 +5,3 @@ _.path = [
 
 [tools]
 opentofu = "latest"
-
-[tools.python]
-version = "3.12"
-virtualenv = "{{config_root}}/../.venv"
