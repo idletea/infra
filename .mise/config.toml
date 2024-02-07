@@ -1,0 +1,11 @@
+[env]
+_.path = [
+    "{{config_root}}/util",
+]
+
+[tools]
+opentofu = "latest"
+
+[tools.python]
+version = "3.12"
+virtualenv = "{{config_root}}/../.venv"

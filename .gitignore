@@ -1,0 +1,3 @@
+.venv
+tofu/.terraform
+tofu/.terraform.lock.hcl

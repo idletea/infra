@@ -1,0 +1,9 @@
+#!/usr/bin/fish
+# mise description="Run tofu apply"
+source (which __cd) "$root/tofu"
+
+if not test -e .terraform
+    __run -c tofu init
+end
+
+__run tofu apply

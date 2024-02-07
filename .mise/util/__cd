@@ -1,0 +1,4 @@
+#!/usr/bin/env fish
+printf "%s[#] \$ cd $argv%s\n" \
+    (set_color -o white) (set_color normal)
+cd $argv
