@@ -46,6 +46,10 @@ module "idte_net" {
       type  = "A"
       name  = "stoat"
       value = "138.197.165.65"
+    }, {
+      type  = "A"
+      name  = "lemur"
+      value = vultr_instance.node.main_ip
     },
   ]
 }
