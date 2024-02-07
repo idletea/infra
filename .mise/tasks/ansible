@@ -1,0 +1,3 @@
+#!/usr/bin/fish
+# mise description="Run ansible playbooks"
+source (which __cd) "$root/ansible"

@@ -1,0 +1,45 @@
+- name: debian upkeep
+  hosts: debian
+  remote_user: root
+
+  tasks:
+    - name: apt update
+      apt:
+        name: "*"
+        state: latest
+        update_cache: yes
+        autoclean: yes
+        autoremove: yes
+
+    - name: remove motd
+      file:
+        name: "/etc/motd"
+        state: absent
+
+- name: node setup
+  hosts: nodes
+  remote_user: root
+
+  tasks:
+    # k3s config
+    - name: k3s config dir
+      file:
+        path: /etc/rancher/k3s
+        state: directory
+    - name: k3s config
+      copy:
+        src: k3s-config.yaml
+        dest: /etc/rancher/k3s/config.yaml
+
+    # install k3s
+    - name: k3s install
+      shell:
+        cmd: curl -sfL https://get.k3s.io | sh -
+        creates: /usr/local/bin/k3s
+
+    # fetch kubectl config
+    - name: k3s config fetch
+      fetch:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: ../.kube-config
+        flat: true

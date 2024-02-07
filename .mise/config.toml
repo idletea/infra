@@ -5,3 +5,4 @@ _.path = [
 
 [tools]
 opentofu = "latest"
+kubectl = "latest"
