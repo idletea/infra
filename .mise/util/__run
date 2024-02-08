@@ -1,14 +1,10 @@
 #!/usr/bin/env fish
 argparse --name=__run 'c/capture' -- $argv; or exit 1
 
-# prefix to rewrite the status line in-place
-# when output is being captured for the job
-set prefix ""
-if not test "$_flag_capture" = ""
-    set prefix '\r\33[2k'
-end
+set line_clear '\r\33[2k'
 
 # show job to be run
+if not test "$_flag_capture" = ""; tput sc; end
 printf "%s[-] \$ $argv%s" \
     (set_color -o white) (set_color normal)
 if test "$_flag_capture" = ""
@@ -25,10 +21,16 @@ end
 
 # output status, and if capturing stdout/stderr
 if test $status = "0"
-    printf "$prefix%s[✔] \$ $argv%s\n" \
+    if not test "$_flag_capture" = ""
+        tput rc; printf $line_clear
+    end
+    printf "%s[✔] \$ $argv%s\n" \
         (set_color -o green) (set_color normal)
 else
-    printf "$prefix%s[✘] \$ $argv\n%s" \
+    if not test "$_flag_capture" = ""
+        tput rc; printf $line_clear
+    end
+    printf "%s[✘] \$ $argv\n%s" \
         (set_color -o red) (set_color normal)
     if not test "$_flag_capture" = ""
         cat $buf
