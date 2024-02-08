@@ -1,0 +1,40 @@
+#!/usr/bin/env fish
+argparse --name "proxy" "start" "stop" "restart" -- $argv
+set -g action "start"
+if test -n "$_flag_restart"; set -g action "restart"; end
+if test -n "$_flag_stop"; set -g action "stop"; end
+
+function old_proxy_pid
+    lsof -i -P | grep LISTEN | grep "localhost:6443" | head -n 1 | awk '{print $2}'
+end
+
+function start_proxy
+    __run -- ssh -L localhost:6443:localhost:6443 \
+        root@lemur.idte.net -f sleep 1d
+    # wait for proxy to be listening
+    while true
+        set -l listening_pid (old_proxy_pid)
+        if test -n "$listening_pid"
+            return 0
+        end
+        sleep 0.1
+    end
+end
+
+function stop_proxy -a pid
+    __run --capture -- kill $pid
+end
+
+set -l old_proxy (old_proxy_pid)
+if test -n "$old_proxy"
+    if test "$action" = "start"
+        exit 0
+    else
+        stop_proxy $old_proxy
+    end
+end
+
+switch $action
+    case "start" "restart"
+        start_proxy
+end

@@ -1,3 +1,9 @@
 #!/usr/bin/fish
 # mise description="Run ansible playbooks"
 source (which __cd) "$root/ansible"
+
+if not which ansible &>/dev/null
+    __run -- sudo pacman -S --needed ansible
+end
+
+__run -- ansible-playbook -i inventory.ini nodes.yaml

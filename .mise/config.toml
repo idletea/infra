@@ -1,7 +1,6 @@
 [env]
-_.path = [
-    "{{config_root}}/util",
-]
+_.path = ["{{config_root}}/util"]
+KUBECONFIG = "{{config_root}}/../.kube-config"
 
 [tools]
 opentofu = "latest"
