@@ -1,5 +1,5 @@
 #!/usr/bin/env fish
-argparse --name=__run 'c/capture' -- $argv; or exit 1
+argparse --name=__run 'c/capture' 'p/post-process=' -- $argv; or exit 1
 
 set line_clear '\r\33[2k'
 
@@ -14,9 +14,9 @@ end
 # run job
 set buf (mktemp)
 if not test "$_flag_capture" = ""
-    fish -c "$argv" &>$buf
+    fish -c "$argv $_flag_post_process" &>$buf
 else
-    fish -c "$argv"
+    fish -c "$argv $_flag_post_process"
 end
 
 # output status, and if capturing stdout/stderr

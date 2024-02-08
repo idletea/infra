@@ -9,6 +9,14 @@ set argocd_manifest "https://raw.githubusercontent.com/argoproj/argo-cd/stable/m
 __section --title argocd
 if not kubectl get namespace argocd &>/dev/null
     __run -c -- kubectl create namespace argocd
+    __run -c -- kubectl -n argocd apply -f argocd-config.yaml
+    __run -c -- kubectl -n argocd apply -f $argocd_manifest
+else
+    __run -c -- kubectl -n argocd apply -f argocd-config.yaml
 end
-__run -c -- kubectl -n argocd apply -f argocd-config.yaml
-__run -c -- kubectl -n argocd apply -f $argocd_manifest
+
+# argocd apps (manifests/**/app.yaml)
+__section --title "argocd apps"
+for yaml in (fd -d2 app.yaml)
+    __k_apply -f $yaml
+end

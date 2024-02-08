@@ -1,0 +1,7 @@
+#!/usr/bin/env fish
+argparse --name=__k_apply "f/file=" -- $argv; or exit 1
+
+__run --post-process "| sed 's/^/    /g'" -- kubectl apply -f $_flag_file \
+    | sed 's/ created$/ '(set_color -o green)'created'(set_color normal)'/g' \
+    | sed 's/ unchanged$/ '(set_color -o black)'unchanged'(set_color normal)'/g' \
+    | sed 's/ configured$/ '(set_color -o blue)'configured'(set_color normal)'/g'
