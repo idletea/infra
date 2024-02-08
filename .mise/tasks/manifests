@@ -15,8 +15,15 @@ else
     __run -c -- kubectl -n argocd apply -f argocd-config.yaml
 end
 
+
 # argocd apps (manifests/**/app.yaml)
 __section --title "argocd apps"
+# ensure git is synced as apps generally rely on being
+# able to read additional manifests from github
+if not __is_git_synced
+    __warning -- git is not synced with remote
+    exit 1
+end
 for yaml in (fd -d2 app.yaml)
     __k_apply -f $yaml
 end

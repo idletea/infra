@@ -1,0 +1,5 @@
+#!/usr/bin/env fish
+argparse --name=__warning -- $argv; or exit 1
+
+printf "%s[!] $argv%s\n" \
+    (set_color -o yellow) (set_color normal)

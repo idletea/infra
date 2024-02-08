@@ -1,0 +1,12 @@
+#!/usr/bin/env fish
+argparse --name=__is_git_synced -- $argv; or exit 1
+
+if test -n "$ITSFINE"; return 0; end
+
+set git_status (git status --porcelain)
+set remote_hash (git rev-parse origin/trunk)
+set local_hash (git rev-parse trunk)
+
+if test -n "$git_status"; or test "$remote_hash" != "$local_hash"
+    return 1
+end
