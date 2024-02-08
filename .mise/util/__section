@@ -1,0 +1,5 @@
+#!/usr/bin/env fish
+argparse --name=__header "t/title=" -- $argv; or exit 1
+
+printf "%s==== $_flag_title ====%s\n" \
+    (set_color -o white) (set_color normal)

@@ -1,0 +1,14 @@
+#!/usr/bin/fish
+# mise description="Apply manifests to kubernetes"
+# mise depends=["proxy"]
+source (which __cd) "$root/manifests"
+
+set argocd_manifest "https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/core-install.yaml"
+
+# argocd
+__section --title argocd
+if not kubectl get namespace argocd &>/dev/null
+    __run -c -- kubectl create namespace argocd
+end
+__run -c -- kubectl -n argocd apply -f argocd-config.yaml
+__run -c -- kubectl -n argocd apply -f $argocd_manifest

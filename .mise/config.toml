@@ -3,5 +3,6 @@ _.path = ["{{config_root}}/util"]
 KUBECONFIG = "{{config_root}}/../.kube-config"
 
 [tools]
+argocd = "latest"
 opentofu = "latest"
 kubectl = "latest"

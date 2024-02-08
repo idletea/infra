@@ -41,6 +41,12 @@ module "idte_net" {
 
   fqdn = "idte.net"
   records = [
+    # internal names
+    {
+      type  = "A"
+      name  = "argocd.svc.idte.net"
+      value = "127.8.0.10"
+    },
     # machines
     {
       type  = "A"

@@ -1,0 +1,18 @@
+#!/usr/bin/fish
+# mise description="Make the argocd UI available"
+# mise depends=["proxy"]
+
+# allow binding to 80
+set argocd_path (which argocd)
+set argocd_cap (getcap $argocd_path | grep "=ep")
+if test "$argocd_cap" = ""
+    __run sudo setcap "cap_net_bind_service=+ep" $argocd_path
+end
+
+# ensure internal name
+if not cat /etc/hosts | grep "argocd.svc.idte.net" &>/dev/null
+    __run -c -- 'echo "127.8.0.10      argocd.svc.idte.net" | sudo tee -a /etc/hosts'
+end
+
+__run -c -- kubectl config set-context --current --namespace=argocd
+__run -- argocd admin dashboard --address 127.0.0.1 --port 80
