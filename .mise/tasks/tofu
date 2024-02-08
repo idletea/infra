@@ -1,9 +1,17 @@
 #!/usr/bin/fish
 # mise description="Run tofu apply"
 source (which __cd) "$root/tofu"
+op item get "infra env" --fields notesPlain --format json \
+    | jq ".value" -r \
+    | source
 
 if not test -e .terraform
     __run -c tofu init
 end
 
-__run tofu apply
+set args "apply"
+if not test "$argv" = ""
+    set args "$argv"
+end
+
+__run tofu $args
