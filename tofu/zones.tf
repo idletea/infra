@@ -68,12 +68,3 @@ module "oefd_net" {
   tuta_verification = "02b7fd72d03f182f58988d688d966aa5"
   records           = []
 }
-
-module "dtkerr_ca" {
-  source     = "./cloudflare_zone"
-  account_id = local.cloudflare_account_id
-
-  fqdn              = "dtkerr.ca"
-  tuta_verification = "a9b4a17e3c920c735b1ee45e5207ad7c"
-  records           = []
-}
