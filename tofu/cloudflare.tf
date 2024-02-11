@@ -14,8 +14,8 @@ resource "cloudflare_ruleset" "idletea_net_global" {
         expression = "http.host"
       }
     }
-    expression = "true"
+    expression  = "true"
     description = "add edge-host header"
-    enabled = true
+    enabled     = true
   }
 }
