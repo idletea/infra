@@ -1,6 +1,11 @@
 #!/usr/bin/fish
 # mise description="Run tofu apply"
 source (which __cd) "$root/tofu"
+
+if not op item get "infra env" --fields notesPlain --format json &>/dev/null
+    __warning -- "`op signin | source` required"
+    exit 1
+end
 op item get "infra env" --fields notesPlain --format json \
     | jq ".value" -r \
     | source
