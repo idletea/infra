@@ -1,0 +1,13 @@
+#!/usr/bin/env fish
+# mise description="Build static sites"
+source (which __cd) "$root/static"
+
+for dir in (fd -t directory -d 1 -E 'build' . | xargs -L 1 basename)
+    __section --title $dir
+    if not test -e build/$dir
+        __run -c -- mkdir build/$dir
+    end
+    for content_file in (fd -t file '' $dir)
+        __run -c -- esh -o build/$content_file -- base.esh content_file="$content_file"
+    end
+end

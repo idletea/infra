@@ -1,3 +1,4 @@
 .kube-config
+static/build
 tofu/.terraform
 tofu/.terraform.lock.hcl

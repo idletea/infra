@@ -8,6 +8,8 @@ All-in-one repo for my hobby infrastructure based on [k3s](https://k3s.io/).
     * set up k3s on the vm
 * [manifests](manifests/readme.md)
     * set up [argocd](https://argo-cd.readthedocs.io/en/stable/)
+* [static](static/readme.md)
+    * static website contents
 * [containers](containers/readme.md)
     * [auth-proxy](containers/auth-proxy)
         * validates [cloudflare zero-trust](https://developers.cloudflare.com/cloudflare-one/) jwts
