@@ -4,10 +4,19 @@ source (which __cd) "$root/static"
 
 for dir in (fd -t directory -d 1 -E 'build' . | xargs -L 1 basename)
     __section --title $dir
+
     if not test -e build/$dir
         __run -c -- mkdir build/$dir
     end
-    for content_file in (fd -t file '' $dir)
-        __run -c -- esh -o build/$content_file -- base.esh content_file="$content_file"
+
+    if which htmlmin &>/dev/null
+        for content_file in (fd -t file '' $dir)
+            __run -c -- "esh base.esh content_file=$content_file | htmlmin > build/$content_file"
+        end
+    else
+        __warning "`htmlmin` not in PATH, skippining minimizing"
+        for content_file in (fd -t file '' $dir)
+            __run -c -- esh -o build/$content_file -- base.esh content_file="$content_file"
+        end
     end
 end
