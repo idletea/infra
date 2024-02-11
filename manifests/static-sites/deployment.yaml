@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: static-sites
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: static-sites
+  template:
+    metadata:
+      labels:
+        app: static-sites
+    spec:
+      containers:
+        - name: static-sites
+          image: ghcr.io/idletea/static-sites:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000

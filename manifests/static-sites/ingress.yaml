@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: static-sites
+  annotations:
+    cert-manager.io/cluster-issuer: dns-01
+    haproxy-ingress.github.io/redirect-from: "www.idletea.net"
+spec:
+  ingressClassName: haproxy-public
+  tls:
+     - secretName: tls-cert
+       hosts:
+         - idletea.net
+         - www.idletea.net
+  rules:
+    - host: "idletea.net"
+      http:
+        paths:
+        - path: /
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: static-sites
+              port:
+                number: 80
