@@ -16,13 +16,19 @@ jobs:
     permissions:
       contents: read
       packages: write
+
     steps:
       - name: checkout
         uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        with:
+          version: latest
+          install: true
+          cache: true
+          experimental: true
       - name: build templates
         run: |
-          pip install jinja2 minify_html \
-            && python3 static/build.py
+          mise run static-build
       - name: login
         uses: docker/login-action@v3
         with:
