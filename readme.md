@@ -13,6 +13,8 @@ All-in-one repo for my hobby infrastructure based on [k3s](https://k3s.io/).
 * [containers](containers/readme.md)
     * [auth-proxy](containers/auth-proxy)
         * validates [cloudflare zero-trust](https://developers.cloudflare.com/cloudflare-one/) jwts
+    * [static-sites](containers/static-sites)
+        * bundled nginx with generated static sites
 
 ## requirements
 
