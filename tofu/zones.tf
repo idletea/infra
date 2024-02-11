@@ -14,19 +14,10 @@ module "idletea_net" {
       name  = "@"
       value = "138.197.165.65"
       }, {
-      type    = "A"
-      name    = "cdn"
-      value   = "138.197.165.65"
-      proxied = true
-      }, {
-      type    = "A"
+      type    = "CNAME"
       name    = "echo"
-      value   = "138.197.165.65"
+      value   = "idletea.net"
       proxied = true
-      }, {
-      type  = "A"
-      name  = "err"
-      value = "138.197.165.65"
       }, {
       type  = "A"
       name  = "rsvplease"
