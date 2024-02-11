@@ -8,7 +8,7 @@ module "idletea_net" {
     {
       type  = "A"
       name  = "@"
-      value = "138.197.165.65"
+      value = vultr_instance.node.main_ip
       }, {
       type  = "CNAME"
       name  = "www"
