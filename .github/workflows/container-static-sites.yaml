@@ -16,13 +16,17 @@ jobs:
     permissions:
       contents: read
       packages: write
-
     steps:
       - name: checkout
         uses: actions/checkout@v4
+      - name: install script deps
+        run: |
+          sudo apt install -y fish fd-find
+          mkdir /tmp/path
+          ln -s $(which fdfind) /tmp/path/fd
+          echo "/tmp/path" >> $GITHUB_PATH
       - uses: jdx/mise-action@v2
         with:
-          version: latest
           install: true
           cache: true
           experimental: true
