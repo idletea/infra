@@ -1,0 +1,12 @@
+FROM docker.io/library/python:3.12-alpine
+
+EXPOSE 8000/tcp
+
+RUN apk update \
+    && apk upgrade --no-cache \
+    && pip install pyjwt flask gunicorn cryptography
+
+WORKDIR /app
+COPY auth-proxy.py auth-proxy.py
+
+ENTRYPOINT ["gunicorn", "--bind=0.0.0.0", "auth-proxy:app"]
