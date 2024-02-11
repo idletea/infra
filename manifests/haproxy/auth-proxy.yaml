@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-proxy
+  template:
+    metadata:
+      labels:
+        app: auth-proxy
+    spec:
+      containers:
+        - name: auth-proxy
+          image: ghcr.io/idletea/auth-proxy:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          env:
+            - name: TEAM_DOMAIN
+              value: "idletea.cloudflareaccess.com"
+            - name: AUDIENCE_TAGS
+              value: |
+                "echo.idletea.net" = "7d7919e8af7b931a6f49bbefdb4eb64516d2ae9ba8bad080d924123a5b85464a"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-proxy
+spec:
+  ports:
+    - port: 80
+      targetPort: 8000
+  selector:
+    app: auth-proxy

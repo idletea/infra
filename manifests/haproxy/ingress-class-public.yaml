@@ -1,0 +1,19 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: haproxy-public
+spec:
+  controller: haproxy-ingress.github.io/controller
+  parameters:
+    kind: ConfigMap
+    name: haproxy-public
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haproxy-public
+  namespace: haproxy
+data:
+  config-backend: |
+    http-response del-header server

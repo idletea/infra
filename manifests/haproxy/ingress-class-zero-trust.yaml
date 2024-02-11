@@ -1,0 +1,20 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: haproxy-zero-trust
+spec:
+  controller: haproxy-ingress.github.io/controller
+  parameters:
+    kind: ConfigMap
+    name: haproxy-zero-trust
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haproxy-zero-trust
+  namespace: haproxy
+data:
+  auth-url: "http://auth-proxy"
+  config-backend: |
+    http-response del-header server
