@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
       - name: install script deps
         run: |
-          sudo apt install -y fish fd-find
+          sudo apt install -y fish fd-find htmlmin
           mkdir /tmp/path
           ln -s $(which fdfind) /tmp/path/fd
           echo "/tmp/path" >> $GITHUB_PATH
