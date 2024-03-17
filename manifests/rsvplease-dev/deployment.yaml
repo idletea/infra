@@ -16,14 +16,14 @@ spec:
         - name: rsvplease-dev
           image: ghcr.io/rsvplease/rsvplease:latest
           imagePullPolicy: Always
-          imagePullSecrets:
-            - ghcr-io
           ports:
             - containerPort: 3000
           volumeMounts:
             - name: storage-pvc
               mountPath: /app/storage
+      imagePullSecrets:
+        - name: ghcr-io
       volumes:
-      - name: storage-pvc
-        persistentVolumeClaim:
-          claimName: rsvplease-dev
+        - name: storage-pvc
+          persistentVolumeClaim:
+            claimName: rsvplease-dev

@@ -49,7 +49,7 @@ stringData:
 Manifests that may refer to a private ghcr.io package need a secret set up with a base64 encoded json something like this
 
 ```
-{"auths":{"ghcr.io":{"auth":"idletea:<base64 encoded github classic token with `package:read` privileges>"}}}
+{"auths":{"ghcr.io":{"auth": base64 of("idletea:<github classic token with `package:read` privileges>") }}}
 ```
 
 ```
