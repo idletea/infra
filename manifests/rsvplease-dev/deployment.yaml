@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rsvplease-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rsvplease-dev
+  template:
+    metadata:
+      labels:
+        app: rsvplease-dev
+    spec:
+      containers:
+        - name: rsvplease-dev
+          image: ghcr.io/rsvplease/rsvplease:latest
+          imagePullPolicy: Always
+          imagePullSecrets:
+            - ghcr-io
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: storage-pvc
+              mountPath: /app/storage
+      volumes:
+      - name: storage-pvc
+        persistentVolumeClaim:
+          claimName: rsvplease-dev

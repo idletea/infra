@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rsvplease-dev
+  annotations:
+    cert-manager.io/cluster-issuer: dns-01
+    haproxy-ingress.github.io/redirect-from: "dev.arielandtyson2024.com"
+spec:
+  ingressClassName: haproxy-zero-trust
+  tls:
+     - secretName: tls-cert
+       hosts:
+         - dev.arielandtyson2024.com
+  rules:
+    - host: "dev.arielandtyson2024.com"
+      http:
+        paths:
+        - path: /
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: rsvplease-dev
+              port:
+                number: 80
