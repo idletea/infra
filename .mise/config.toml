@@ -1,8 +1,12 @@
 [env]
 _.path = ["{{config_root}}/util"]
+_.file = "~/.local/secret/op-token"
+_.python.venv = { path = "{{config_root}}/venv", create = true }
 KUBECONFIG = "{{config_root}}/../.kube-config"
 
 [tools]
+python = "latest"
+1password-cli = "latest"
 argocd = "latest"
 opentofu = "latest"
 kubectl = "latest"

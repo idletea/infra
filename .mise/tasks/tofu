@@ -2,16 +2,22 @@
 # mise description="Run tofu apply"
 source (which __cd) "$root/tofu"
 
-if not op item get "infra env" --fields notesPlain --format json &>/dev/null
-    __warning -- "`op signin | source` required"
-    exit 1
+set keys \
+    "CLOUDFLARE_API_TOKEN" \
+    "CLOUDFLARE_R2_TOKEN" \
+    "CLOUDFLARE_R2_ACCESS_KEY_ID" \
+    "CLOUDFLARE_R2_ACCESS_KEY_SECRET"\
+    "DIGITALOCEAN_TOKEN" \
+    "VULTR_API_KEY"
+for key in $keys
+    set -x "$key" "op://Infra/$key/credential"
 end
-op item get "infra env" --fields notesPlain --format json \
-    | jq ".value" -r \
-    | source
+
+set -x AWS_ACCESS_KEY_ID "$CLOUDFLARE_R2_ACCESS_KEY_ID"
+set -x AWS_SECRET_ACCESS_KEY "$CLOUDFLARE_R2_ACCESS_KEY_SECRET"
 
 if not test -e .terraform
-    __run -c tofu init
+    op run -- __run -c tofu init
 end
 
 set args "apply"
@@ -19,4 +25,4 @@ if not test "$argv" = ""
     set args "$argv"
 end
 
-__run tofu $args
+op run -- __run tofu $args
