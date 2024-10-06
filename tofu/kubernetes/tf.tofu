@@ -54,6 +54,22 @@ terraform {
   }
 }
 
+data "terraform_remote_state" "platform" {
+  backend = "s3"
+
+  config = {
+    region                      = "auto"
+    bucket                      = "tofu"
+    key                         = "platform.tofu"
+    skip_region_validation      = true
+    skip_credentials_validation = true
+    skip_s3_checksum            = true
+    endpoints = {
+      s3 = "https://${local.cloudflare_account}.r2.cloudflarestorage.com"
+    }
+  }
+}
+
 provider "kubernetes" {
   config_path = "../../.kube-config"
 }
