@@ -1,0 +1,9 @@
+cluster-init: true
+cluster-domain: vk.idte.net
+
+cluster-cidr: 10.1.0.0/16
+service-cidr: 10.2.0.0/16
+
+disable:
+  - traefik
+  - helm-controller

@@ -1,0 +1,11 @@
+[env]
+_.path = ["bin"]
+_.python.venv = { path = ".venv", create = true }
+KUBECONFIG = "{{ config_root }}/.kube-config"
+
+[tools]
+flux2 = "latest"
+python = "latest"
+kubectl = "latest"
+opentofu = "latest"
+"pipx:uv" = "latest"

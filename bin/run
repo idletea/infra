@@ -1,0 +1,6 @@
+#!/bin/fish
+
+printf "%s[§]%s $argv\n%s" \
+    (set_color -o blue) (set_color -i white) (set_color normal)
+
+eval "$argv"

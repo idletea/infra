@@ -1,0 +1,157 @@
+#!/usr/bin/env python
+from __future__ import annotations
+
+import json
+import tomllib
+from typing import Generator, Any
+from hashlib import shake_256
+from pathlib import Path
+from dataclasses import dataclass
+
+RECORD_TYPES: set[str] = {"a", "aaaa", "cname", "txt", "mx"}
+DEFAULT_COMMENT = "source = 'tofu/zones'"
+
+
+@dataclass
+class Zone:
+    fqdn: str
+    records: list[Record]
+
+    def identity(self) -> str:
+        return self.fqdn.replace(".", "_")
+
+
+@dataclass
+class Record:
+    type: str
+    name: str
+    content: str
+    proxied: bool = False
+    priority: int | None = None
+    comment: str = DEFAULT_COMMENT
+
+    def identity(self) -> str:
+        base = f"{self.name}{self.content}{self.priority}"
+        hash = shake_256(base.encode("utf-8"))
+        return f"{self.type}_{hash.hexdigest(8)}"
+
+
+def bounce_records(toml_email: dict[str, Any]) -> list[Record]:
+    if toml_email.get("bounce") is True:
+        dmarc = "v=DMARC1; p=reject; sp=reject; adkim=s; aspf=s"
+        return [
+            Record(type="txt", name="@", content="v=spf1 -all"),
+            Record(type="txt", name="_dmarc", content=dmarc),
+        ]
+    return []
+
+
+def tuta_records(toml_email: dict[str, Any]) -> list[Record]:
+    if not (tuta := toml_email.get("tuta")):
+        return []
+    verification = tuta["verification"]
+    return [
+        Record(type="mx", name="@", content="mail.tutanota.de", priority=10),
+        Record(type="txt", name="@", content=f"t-verify={verification}"),
+        Record(type="txt", name="@", content="v=spf1 include:spf.tutanota.de -all"),
+        Record(type="txt", name="_dmarc", content="v=DMARC1; p=quarantine; adkim=s"),
+        Record(type="cname", name="s1._domainkey", content="s1.domainkey.tutanota.de"),
+        Record(type="cname", name="s2._domainkey", content="s2.domainkey.tutanota.de"),
+        Record(type="cname", name="mta-sts", content="mta-sts.tutanota.de"),
+        Record(type="cname", name="_mta-sts", content="mta-sts.tutanota.de"),
+    ]
+
+
+def protonmail_records(toml_email: dict[str, Any]) -> list[Record]:
+    if not (protonmail := toml_email.get("protonmail")):
+        return []
+    verification = f"protonmail-verification={protonmail["verification"]}"
+    domain_key = protonmail["domain_key"]
+    return [
+        Record(type="mx", name="@", content="mail.protonmail.ch", priority=10),
+        Record(type="mx", name="@", content="mailsec.protonmail.ch", priority=20),
+        Record(type="txt", name="@", content=verification),
+        Record(type="txt", name="@", content="v=spf1 include:_spf.protonmail.ch ~all"),
+        Record(type="txt", name="_dmarc", content="v=DMARC1; p=quarantine;"),
+        *[
+            Record(
+                type="cname",
+                name=f"protonmail{i}._domainkey",
+                content=f"protonmail{i}.domainkey.{domain_key}.domains.proton.ch.",
+            )
+            for i in ("", "2", "3")
+        ],
+    ]
+
+
+def toml_zones_in(dir: Path) -> Generator[Path, None, None]:
+    for child in dir.iterdir():
+        if child.name.endswith("._.toml"):
+            yield child
+
+
+def zones_in(dir: Path) -> Generator[Zone, None, None]:
+    for zone in toml_zones_in(dir):
+        fqdn = ".".join(zone.name.split(".")[:-2])
+        toml = tomllib.load(zone.open("rb"))
+
+        records = [
+            Record(type=type, **record_toml)
+            for type in RECORD_TYPES
+            for record_toml in toml.get(type, [])
+        ]
+        if email := toml.get("email"):
+            records.extend(bounce_records(email))
+            records.extend(tuta_records(email))
+            records.extend(protonmail_records(email))
+
+        yield Zone(fqdn, records)
+
+
+if __name__ == "__main__":
+    infra_dir = Path(__file__).parent.parent.resolve()
+    zones_dir = infra_dir / "tofu" / "zones"
+
+    tofu_zones: dict[str, Any] = {}
+    tofu_zone_settings: dict[str, Any] = {}
+    tofu_zone_records: dict[str, Any] = {}
+
+    for zone in zones_in(zones_dir):
+        tofu_zones[zone.identity()] = {
+            "account_id": "${local.cloudflare_account}",
+            "zone": zone.fqdn,
+            "lifecycle": {"prevent_destroy": True},
+        }
+        tofu_zone_settings[zone.identity()] = {
+            "zone_id": "${cloudflare_zone." + zone.identity() + ".id}",
+            "settings": {
+                "always_use_https": "on",
+                "min_tls_version": "1.3",
+                "ssl": "strict",
+            },
+        }
+        for record in zone.records:
+            identity = f"{zone.identity()}_{record.identity()}"
+            record_args = {
+                "zone_id": "${cloudflare_zone." + zone.identity() + ".id}",
+                "type": record.type.upper(),
+                "name": record.name,
+                "content": record.content,
+                "proxied": record.proxied,
+                "comment": record.comment,
+            }
+            if record.priority:
+                record_args["priority"] = record.priority
+            tofu_zone_records[identity] = record_args
+
+    with (zones_dir / "zones.tofu.json").open("w+") as fp:
+        json.dump(
+            {
+                "resource": {
+                    "cloudflare_zone": tofu_zones,
+                    "cloudflare_zone_settings_override": tofu_zone_settings,
+                    "cloudflare_record": tofu_zone_records,
+                }
+            },
+            fp,
+        )

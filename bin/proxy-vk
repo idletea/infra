@@ -1,0 +1,10 @@
+#!/bin/fish
+
+if systemctl --user status vk-proxy.service &>/dev/null
+    systemctl --user restart vk-proxy.service &>/dev/null
+else
+    systemd-run --user --unit vk-proxy -- \
+        ssh -NT -o ServerAliveInterval=60 -o ExitOnForwardFailure=yes \
+        -L localhost:6443:localhost:6443 root@n0.vk.idte.net &>/dev/null
+    systemctl --user restart vk-proxy.service &>/dev/null
+end

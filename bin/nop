@@ -1,0 +1,4 @@
+#!/bin/fish
+
+printf "%s[-] $argv\n%s" \
+    (set_color --dim) (set_color normal)

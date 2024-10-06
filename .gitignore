@@ -1,0 +1,7 @@
+.venv
+.kube-config
+uv.lock
+pyinfra-debug.log
+**/*.tofu.json
+**/.terraform
+**/.terraform.lock.hcl

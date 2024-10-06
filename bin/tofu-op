@@ -1,0 +1,19 @@
+#!/bin/fish
+
+# terraform state/provider secrets
+set -x TF_VAR_STATE_KEY \
+    "op://Infra/TOFU/TF_VAR_STATE_KEY"
+set -x VULTR_API_KEY \
+    "op://Infra/TOFU/VULTR_API_KEY"
+set -x CLOUDFLARE_API_TOKEN \
+    "op://Infra/TOFU/CLOUDFLARE_API_TOKEN"
+set -x AWS_ACCESS_KEY_ID \
+    "op://Infra/TOFU/CLOUDFLARE_R2_ACCESS_KEY_ID"
+set -x AWS_SECRET_ACCESS_KEY \
+    "op://Infra/TOFU/CLOUDFLARE_R2_SECRET_ACCESS_KEY"
+
+# kubernetes secrets
+set -x TF_VAR_CERT_MANAGER_CLOUDFLARE_TOKEN \
+    "op://Infra/TOFU/CLOUDFLARE_DNS_API_TOKEN"
+
+run eval "op run -- tofu $argv"
