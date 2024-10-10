@@ -16,7 +16,7 @@ metadata:
 spec:
   interval: 24h
   type: oci
-  url: oci://registry-1.docker.io/envoyproxy/gateway-helm
+  url: oci://registry-1.docker.io/envoyproxy
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
