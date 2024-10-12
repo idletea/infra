@@ -12,7 +12,7 @@ resource "kubernetes_secret_v1" "cert_manager_cloudflare_token" {
   }
 
   data = {
-    token = var.CERT_MANAGER_CLOUDFLARE_TOKEN
+    api-token = var.CERT_MANAGER_CLOUDFLARE_TOKEN
   }
 
   depends_on = [kubernetes_namespace.ns["cert-manager"]]
