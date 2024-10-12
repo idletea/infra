@@ -4,17 +4,15 @@ kind: Deployment
 metadata:
   name: echo
   namespace: echo
-  labels:
-    app: echo
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: echo
+      app.kubernetes.io/name: echo
   template:
     metadata:
       labels:
-        app: echo
+        app.kubernetes.io/name: echo
     spec:
       containers:
       - name: echo
@@ -43,14 +41,17 @@ metadata:
 spec:
   parentRefs:
   - name: envoy-gateway
+    namespace: envoy-gateway
     sectionName: https-echo
   hostnames:
   - "echo.idletea.net"
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
+  - filters:
+    - type: ResponseHeaderModifier
+      responseHeaderModifier:
+        set:
+        - name: strict-transport-security
+          value: "max-age=63072000; includeSubDomains; preload"
     backendRefs:
     - name: echo-svc
       port: 5678
