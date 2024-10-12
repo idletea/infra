@@ -16,3 +16,4 @@ spec:
         name: envoy
         namespace: flux-system
   values:
+    kubernetesClusterDomain: vk.idte.net
