@@ -23,6 +23,18 @@ spec:
     allowedRoutes:
       namespaces:
         from: Same
+  - name: https-idletea
+    protocol: HTTPS
+    port: 443
+    hostname: idletea.net
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: cert-idletea-net
+    allowedRoutes:
+      namespaces:
+        from: All
   - name: https-echo
     protocol: HTTPS
     port: 443

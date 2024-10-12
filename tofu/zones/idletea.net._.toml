@@ -1,4 +1,8 @@
 [[a]]
+name = "@"
+content = "${data.terraform_remote_state.platform.outputs.n0_vk_idte_net}"
+
+[[a]]
 name = "echo"
 content = "${data.terraform_remote_state.platform.outputs.n0_vk_idte_net}"
 
