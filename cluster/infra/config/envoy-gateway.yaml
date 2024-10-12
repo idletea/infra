@@ -83,3 +83,5 @@ spec:
         set:
         - name: strict-transport-security
           value: "max-age=63072000; includeSubDomains; preload"
+        - name: content-security-policy
+          value: "default-src 'self'"
